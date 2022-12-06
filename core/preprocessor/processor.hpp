@@ -74,10 +74,6 @@ namespace TEngine {
             map[t.id1].add_edge(edge);
         }
 
-        auto one = map[1];
-        for(auto t:one.getEdges()){
-            cout<<t<<endl;
-        }
     }
 }
 
