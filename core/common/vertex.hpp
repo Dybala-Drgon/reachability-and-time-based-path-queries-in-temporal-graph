@@ -8,15 +8,21 @@ using ll = long long;
 namespace TEngine {
     struct Edge {
         ll end_point;// 对端节点
-        double lambda; // λ值
-        int t; // 对应论文中的时间,尽在origin_vertex中有意义
+        int idx;
+        int t; // 对应论文中的时间,在origin_vertex中有意义
+        int lambda; // λ值
         Edge() {
-            end_point = 0;
+            end_point = -1;
+            idx = -1;
             lambda = 0;
             t = 0;
         }
 
-        Edge(ll endPoint, double lambda, int t) : end_point(endPoint), lambda(lambda), t(t) {}
+        Edge(ll endPoint, int t, int lambda) : end_point(endPoint), t(t), lambda(lambda) {}
+
+        int get_end_time() {
+            return lambda + t;
+        }
 
         // paper中提出，仅当所有member都相同时才可以说相等
         bool operator==(const Edge &rhs) const {
@@ -30,7 +36,8 @@ namespace TEngine {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Edge &edge) {
-            os << "end_point: " << edge.end_point << " lambda: " << edge.lambda << " t: " << edge.t;
+            os << "end_point: " << edge.end_point << " idx: " << edge.idx << " t: " << edge.t << " lambda: "
+               << edge.lambda;
             return os;
         }
     };
@@ -38,22 +45,46 @@ namespace TEngine {
     class origin_vertex {
     private:
         ll id;
-        std::vector<Edge> edges;
+        std::vector<Edge> out_edges;
+        std::vector<Edge> in_edges;
     public:
         ll getId() const {
             return id;
+        }
+
+        std::vector<Edge> &getOutEdges() {
+            return out_edges;
+        }
+
+        std::vector<Edge> &getInEdges() {
+            return in_edges;
         }
 
         void setId(ll id) {
             origin_vertex::id = id;
         }
 
-        const std::vector<Edge> &getEdges() const {
-            return edges;
+        friend std::ostream &operator<<(std::ostream &os, const origin_vertex &vertex) {
+            os << "id: " << vertex.id << " out_edges: ";
+            for (auto &t: vertex.out_edges) {
+                os << t << " ";
+            }
+            os << "\n";
+            os << "id: " << vertex.id << " in_edges: ";
+            for (auto &t: vertex.in_edges) {
+                os << t << " ";
+            }
+            os << "\n";
+            return os;
         }
 
-        void add_edge(Edge &e){
-            edges.push_back(e);
+
+        void add_out_edge(Edge &e) {
+            out_edges.push_back(e);
+        }
+
+        void add_in_edge(Edge &e) {
+            in_edges.push_back(e);
         }
     };
 
@@ -65,8 +96,9 @@ namespace TEngine {
     class vertex {
     private:
         ll id;
-        std::vector<Edge> edges;
         ll t;
+        std::vector<Edge> out_edges; // 第一个元素表示和本map元素的连接，后续元素表示和其他表的连接,对于最后一个节点，使用一个虚拟的dum占位
+        std::vector<Edge> in_edges;
     public:
         ll getId() const {
             return id;
@@ -84,8 +116,25 @@ namespace TEngine {
             vertex::id = id;
         }
 
-        void add_edge(Edge &e){
-            edges.push_back(e);
+        void add_out_edge(Edge &e) {
+            out_edges.push_back(e);
+        }
+
+        void add_in_edge(Edge &e) {
+            in_edges.push_back(e);
+        }
+
+        std::vector<Edge> &getOutEdges() {
+            return out_edges;
+        }
+
+        std::vector<Edge> &getInEdges() {
+            return in_edges;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const vertex &vertex) {
+            os << "id: " << vertex.id << " t: " << vertex.t;
+            return os;
         }
     };
 }
