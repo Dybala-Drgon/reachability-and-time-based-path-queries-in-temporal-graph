@@ -1,0 +1,73 @@
+========= load done, time 0.643 =========
+========= start transform, wait =========
+========= transform done, vertex sum: 13 time: 0.029 =========
+id: 5
+Tin列表: 
+(5,8) 
+节点标识: id: 5 t: 8
+end_point: -1 idx: -1 t: 0 lambda: 0
+
+Tout :
+
+
+id: 4
+Tin列表: 
+(4,6) (4,7) 
+节点标识: id: 4 t: 6
+end_point: 4 idx: 1 t: 0 lambda: 0
+节点标识: id: 4 t: 7
+end_point: -1 idx: -1 t: 0 lambda: 0
+
+Tout :
+
+
+id: 3
+Tin列表: 
+(3,3) (3,5) 
+节点标识: id: 3 t: 3
+end_point: 3 idx: 1 t: 0 lambda: 0
+节点标识: id: 3 t: 5
+end_point: -1 idx: -1 t: 0 lambda: 0
+end_point: 3 idx: 0 t: 6 lambda: 0
+
+Tout :
+(3,6) (3,7) 
+节点标识: id: 3 t: 6
+end_point: 3 idx: 1 t: 0 lambda: 0
+end_point: 4 idx: 1 t: 6 lambda: 1
+节点标识: id: 3 t: 7
+end_point: -1 idx: -1 t: 0 lambda: 0
+end_point: 5 idx: 0 t: 7 lambda: 1
+
+id: 2
+Tin列表: 
+(2,2) (2,3) 
+节点标识: id: 2 t: 2
+end_point: 2 idx: 1 t: 0 lambda: 0
+节点标识: id: 2 t: 3
+end_point: -1 idx: -1 t: 0 lambda: 0
+end_point: 2 idx: 0 t: 5 lambda: 0
+
+Tout :
+(2,5) 
+节点标识: id: 2 t: 5
+end_point: -1 idx: -1 t: 0 lambda: 0
+end_point: 4 idx: 0 t: 5 lambda: 1
+
+id: 1
+Tin列表: 
+
+
+Tout :
+(1,1) (1,2) (1,4) 
+节点标识: id: 1 t: 1
+end_point: 1 idx: 1 t: 0 lambda: 0
+end_point: 2 idx: 0 t: 1 lambda: 1
+节点标识: id: 1 t: 2
+end_point: 1 idx: 2 t: 0 lambda: 0
+end_point: 3 idx: 0 t: 2 lambda: 1
+end_point: 2 idx: 1 t: 2 lambda: 1
+节点标识: id: 1 t: 4
+end_point: -1 idx: -1 t: 0 lambda: 0
+end_point: 3 idx: 1 t: 4 lambda: 1
+

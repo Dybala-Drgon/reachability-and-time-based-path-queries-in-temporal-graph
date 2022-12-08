@@ -46,7 +46,7 @@ namespace TEngine {
             }
         };
 
-        vector < read_obj > vec;
+        vector<read_obj> vec;
         ifstream ifs(path);
         if (!ifs.is_open()) {
             cerr << "========= load data failed =========" << endl;
@@ -132,7 +132,7 @@ namespace TEngine {
             Edge dum;
             dum.end_point = -1;
             dum.idx = -1;
-            vec[vec.size()-1].add_out_edge(dum);
+            vec[vec.size() - 1].add_out_edge(dum);
         }
 
 
@@ -149,7 +149,7 @@ namespace TEngine {
             Edge dum;
             dum.end_point = -1;
             dum.idx = -1;
-            vec[vec.size()-1].add_out_edge(dum);
+            vec[vec.size() - 1].add_out_edge(dum);
         }
 
 
@@ -167,6 +167,7 @@ namespace TEngine {
                 Edge edg;
                 edg.end_point = id;
                 edg.idx = idx;
+                edg.t=out_vec[idx].getT();
                 in_vec[i].add_out_edge(edg);
 
                 last = idx;
@@ -175,7 +176,31 @@ namespace TEngine {
         }
 
         // 4. 不同节点之间的连接
+        for (auto &it: origin) {
+            id_t id = it.first;
+            origin_vertex originVertex = it.second;
+            auto &out_vec = out_res[id];
+            if (out_vec.empty())continue;
+            for (auto &edge: originVertex.getOutEdges()) {
+                // 先找到对应的out_edge索引
+                int idx = bsearch(edge.t, out_vec);
+                if (out_vec[idx].getT() != edge.t) {
+                    cerr << "out 节点不存在" << endl;
+                    exit(2);
+                }
 
+                // 找到连接的in_edge索引
+                auto &in_vec = in_res[edge.end_point];
+                int in_idx = bsearch(edge.get_end_time(), in_vec);
+                if (in_vec[in_idx].getT() != edge.get_end_time() || in_vec[in_idx].getId()!=edge.end_point){
+                    cerr<<"in 节点不存在"<<endl;
+                    exit(2);
+                }
+                Edge tmp(edge);
+                tmp.idx = in_idx;
+                out_vec[idx].add_out_edge(tmp);
+            }
+        }
 
         return cnt;
     }
@@ -196,7 +221,7 @@ namespace TEngine {
     }
 
     static vector <vertex> build_out_vertex(id_t id, vector <Edge> &vec) {
-        vector < vertex > res;
+        vector<vertex> res;
         if (vec.empty()) {
             return res;
         }
@@ -215,7 +240,7 @@ namespace TEngine {
     }
 
     static vector <vertex> build_in_vertex(id_t id, vector <Edge> &vec) {
-        vector < vertex > res;
+        vector<vertex> res;
         if (vec.empty())return res;
 
         vertex tmp;
@@ -234,7 +259,6 @@ namespace TEngine {
         }
         return res;
     }
-
 }
 
 #endif

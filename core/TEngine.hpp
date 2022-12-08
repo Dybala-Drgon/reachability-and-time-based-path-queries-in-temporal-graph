@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <sstream>
 
 using namespace std;
 clock_t start_time, end_time;
@@ -19,6 +20,8 @@ namespace TEngine {
         unordered_map<id_t, vector<vertex>> vertex_map_in;
         unordered_map<id_t, vector<vertex>> vertex_map_out;
         Processor processor;
+
+        void show();// for debug
     public:
         void load(std::string path);
 
@@ -50,22 +53,43 @@ namespace TEngine {
         double endtime = (double) (end_time - start_time) / CLOCKS_PER_SEC;
         cout << "========= transform done, vertex sum: " << res << " time: " << endtime * 1000 << " =========" << endl;
 
-
-//        for (auto it: vertex_map_in) {
-//            cout << it.first << "== ";
-//            for (auto t: it.second) {
-//                auto &tt = t.getOutEdges();
-//                int num = tt.size();
-//                cout<<t<<": ";
-//                for (int i = 1; i < num; i++) {
-//                    cout<<" joint "<<vertex_map_out[tt[i].end_point].at(tt[i].idx)<<endl;
-//                }
-//                cout<<endl;
-//            }
-//            cout << endl;
-//        }
-
+        this->show();
     }
+
+    void Temporal_Engine::show() {
+        for(auto &it : origin_map){
+            stringstream ss;
+            ss<<"id: "<< it.first<<"\n";
+            ss<<"Tin列表: \n";
+            auto &in_vec = vertex_map_in[it.first];
+            for(auto &vertex:in_vec){
+                ss<<"("<<vertex.getId()<<","<<vertex.getT()<<")"<<" ";
+            }
+            ss<<"\n";
+
+            for(auto &vertex: in_vec){
+                ss<<"节点标识: "<<vertex<<"\n";
+                for(auto edge : vertex.getOutEdges()){
+                    ss<<edge<<"\n";
+                }
+            }
+            ss<< "\n";
+            ss<<"Tout :\n";
+            auto &out_vec = vertex_map_out[it.first];
+            for(auto &vertex:out_vec){
+                ss<<"("<<vertex.getId()<<","<<vertex.getT()<<")"<<" ";
+            }
+            ss<<"\n";
+            for(auto &vertex: out_vec){
+                ss<<"节点标识: "<<vertex<<"\n";
+                for(auto edge : vertex.getOutEdges()){
+                    ss<<edge<<"\n";
+                }
+            }
+            cout<<ss.str()<<endl;
+        }
+    }
+
 }
 
 
