@@ -128,6 +128,7 @@ namespace TEngine {
                 tmp.end_point = it.first;
                 tmp.idx = i + 1;
                 vec[i].add_out_edge(tmp);
+                vec[i].setIsOut(false);
             }
             Edge dum;
             dum.end_point = -1;
@@ -145,6 +146,7 @@ namespace TEngine {
                 tmp.end_point = it.first;
                 tmp.idx = i + 1;
                 vec[i].add_out_edge(tmp);
+                vec[i].setIsOut(true);
             }
             Edge dum;
             dum.end_point = -1;

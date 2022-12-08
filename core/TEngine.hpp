@@ -4,7 +4,8 @@
 #include "common/vertex.hpp"
 #include "common/resp.hpp"
 #include "common/type.h"
-#include "preprocessor/processor.hpp"
+#include "component/preprocessor.hpp"
+#include "component/computation.hpp"
 #include <vector>
 #include <algorithm>
 #include <ctime>
@@ -20,6 +21,7 @@ namespace TEngine {
         unordered_map<id_t, vector<vertex>> vertex_map_in;
         unordered_map<id_t, vector<vertex>> vertex_map_out;
         Processor processor;
+        Computation computation;
 
         void show();// for debug
     public:
@@ -27,7 +29,14 @@ namespace TEngine {
 
         void transform(); // 把时态图变成static graph
         void dump();// dump出图的结构
-        vector<resp_body> get_earliest_arrival_time(int id);
+        /**
+         *
+         * @param id 查询的节点
+         * @param lo 时间下限，闭区间
+         * @param hi 时间上限 开区间
+         * @return
+         */
+        resp_body get_earliest_arrival_time(id_t id, TEngine::ll lo, TEngine::ll hi);
 
         vector<resp_body> get_latest_departure_time(int id);
 
@@ -52,41 +61,56 @@ namespace TEngine {
         end_time = clock();
         double endtime = (double) (end_time - start_time) / CLOCKS_PER_SEC;
         cout << "========= transform done, vertex sum: " << res << " time: " << endtime * 1000 << " =========" << endl;
-
-        this->show();
+        // TODO: 释放origin的空间
+//        this->show();
     }
 
-    void Temporal_Engine::show() {
-        for(auto &it : origin_map){
-            stringstream ss;
-            ss<<"id: "<< it.first<<"\n";
-            ss<<"Tin列表: \n";
-            auto &in_vec = vertex_map_in[it.first];
-            for(auto &vertex:in_vec){
-                ss<<"("<<vertex.getId()<<","<<vertex.getT()<<")"<<" ";
-            }
-            ss<<"\n";
+    resp_body Temporal_Engine::get_earliest_arrival_time(id_t id, TEngine::ll lo, TEngine::ll hi) {
+        start_time = clock();
+        context ctx;
+        ctx.vertex_map_out = &vertex_map_out;
+        ctx.vertex_map_in = &vertex_map_in;
+        resp_body res;
+        res.dist = computation.get_earliest_arrival_time(id, lo, hi, ctx);
+        res.id = id;
+        end_time = clock();
+        double endtime = (double) (end_time - start_time) / CLOCKS_PER_SEC;
+        cout << "========= get_earliest_arrival_time done, time: " << endtime * 1000 << " =========" << endl;
+        return res;
+    }
 
-            for(auto &vertex: in_vec){
-                ss<<"节点标识: "<<vertex<<"\n";
-                for(auto edge : vertex.getOutEdges()){
-                    ss<<edge<<"\n";
+    // for debug
+    void Temporal_Engine::show() {
+        for (auto &it: origin_map) {
+            stringstream ss;
+            ss << "id: " << it.first << "\n";
+            ss << "Tin列表: \n";
+            auto &in_vec = vertex_map_in[it.first];
+            for (auto &vertex: in_vec) {
+                ss << "(" << vertex.getId() << "," << vertex.getT() << ")" << " ";
+            }
+            ss << "\n";
+
+            for (auto &vertex: in_vec) {
+                ss << "节点标识: " << vertex << "\n";
+                for (auto edge: vertex.getOutEdges()) {
+                    ss << edge << "\n";
                 }
             }
-            ss<< "\n";
-            ss<<"Tout :\n";
+            ss << "\n";
+            ss << "Tout :\n";
             auto &out_vec = vertex_map_out[it.first];
-            for(auto &vertex:out_vec){
-                ss<<"("<<vertex.getId()<<","<<vertex.getT()<<")"<<" ";
+            for (auto &vertex: out_vec) {
+                ss << "(" << vertex.getId() << "," << vertex.getT() << ")" << " ";
             }
-            ss<<"\n";
-            for(auto &vertex: out_vec){
-                ss<<"节点标识: "<<vertex<<"\n";
-                for(auto edge : vertex.getOutEdges()){
-                    ss<<edge<<"\n";
+            ss << "\n";
+            for (auto &vertex: out_vec) {
+                ss << "节点标识: " << vertex << "\n";
+                for (auto edge: vertex.getOutEdges()) {
+                    ss << edge << "\n";
                 }
             }
-            cout<<ss.str()<<endl;
+            cout << ss.str() << endl;
         }
     }
 

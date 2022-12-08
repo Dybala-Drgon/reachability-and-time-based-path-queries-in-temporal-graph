@@ -99,7 +99,16 @@ namespace TEngine {
         ll t;
         std::vector<Edge> out_edges; // 第一个元素表示和本map元素的连接，后续元素表示和其他表的连接,对于最后一个节点，使用一个虚拟的dum占位
         std::vector<Edge> in_edges;
+        bool is_out;
     public:
+        bool isOut() const {
+            return is_out;
+        }
+
+        void setIsOut(bool isOut) {
+            is_out = isOut;
+        }
+
         ll getId() const {
             return id;
         }
